@@ -1,6 +1,7 @@
 //각 자동차가 수행할 동작의 함수들에 해당.
+//각 2륜 구동 기준 
 
-void forward(int v){
+void forward(int v);
   analogWrite(A1,0);
   analogWrite(A2,v);
   analogWrite(B1,v);
