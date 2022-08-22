@@ -6,26 +6,45 @@ HUSKYLENS huskylens; //허스키 렌즈를 사용하기 위하여 허스키렌�
 
 void Tracking(HUSKYLENSResult result); // 물체 추적 함수 선언. 
 
-SoftwareSerial btSerial(9,10); // 블루투스모듈에 연결하는 핀 선언 
+SoftwareSerial btSerial(2,3); // 블루투스모듈에 연결하는 핀 선언 (Rx,Tx)
 
-#define B1 3
-#define B2 4
-#define A1 5
-#define A2 6  //DC모터 전용 핀 설정.
+#define FB1 8
+#define FB2 9
+#define FA1 10
+#define FA2 11
+#define BB1 4
+#define BB2 5
+#define BA1 6
+#define BA2 7  //DC모터 전용 핀 설정.
 
-void forward(int v);
-void backward(int v);
-void turnright(int v);
-void turnleft(int v);
-void stops(int v);
+#define BUZZER 12
+
+void forward();
+void backward();
+void turnright();
+void turnleft();
+void stops();
 // 전진, 후진, 좌회전, 우회전 함수 설정. 각 함수 코드는 moving 파일 참조.
 
 void setup() {
   btSerial.begin(9600);
-  pinMode(A1,OUTPUT);
-  pinMode(A2,OUTPUT);
-  pinMode(B1,OUTPUT);
-  pinMode(B2,OUTPUT);
+  pinMode(FA1,OUTPUT);
+  pinMode(FA2,OUTPUT);
+  pinMode(FB1,OUTPUT);
+  pinMode(FB2,OUTPUT);
+  pinMode(BA1,OUTPUT);
+  pinMode(BA2,OUTPUT);
+  pinMode(BB1,OUTPUT);
+  pinMode(BB2,OUTPUT);
+  pinMode(BUZZER,OUTPUT);
+  delay(400);
+  pinMode(BUZZER,INPUT);
+  delay(400);
+  pinMode(BUZZER,OUTPUT);
+  delay(400);
+  pinMode(BUZZER,INPUT);
+  delay(400);
+  
 
   Serial.begin(115200);
     Wire.begin();
@@ -44,7 +63,7 @@ void loop() {
     else if(!huskylens.isLearned()) Serial.println(F("Nothing learned, press learn button on HUSKYLENS to learn one!"));
     else if(!huskylens.available()) {
       Serial.println(F("No block or arrow appears on the screen!"));
-      stops(0);
+      stops();
     }
     else
     {
@@ -66,19 +85,19 @@ void loop() {
   
   switch (c){
     case 'S':
-    stops(0);
+    stops();
     break;
     case 'F':
-    forward(255);
+    forward();
     break;
     case 'B':
-    backward(255);
+    backward();
     break;
     case 'R':
-    turnright(255);
+    turnright();
     break;
     case 'L':
-    turnleft (255);
+    turnleft ();
     break;
     case 'H':
     det = 1;
@@ -101,19 +120,19 @@ void Tracking(HUSKYLENSResult result){
 if(result.ID == 1){
   Serial.println(num1);
   if(num1 > 30) {
-    turnright(140);
+    turnright();
     delay(9);
-    stops(0);
+    stops();
     delay(10); 
   }
   else if (num1 < -30){
-    turnleft(150);
+    turnleft();
     delay(20);
-    stops(0);
+    stops();
     delay(10); //물체가 화면 상의 중심의 x좌표가 원점으로부터 +-30이 넘어가면, RC카를 움직여서 다시 물체를 화면의 중심으로 되돌려놓음.
   }            //RC카 자체의 전력문제 때문에 특정 값 이하의 속도는 사용할 수 없어, 딜레이로 짧게 끊어가며 중심 조절한다.
   else{
-    stops(0); 
+    stops(); 
   }
   Serial.println(num2);
 }
